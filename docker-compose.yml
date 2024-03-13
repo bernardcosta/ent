@@ -1,0 +1,79 @@
+version: "3.5"
+services:
+  jackett:
+    image: 'lscr.io/linuxserver/jackett:${JACKETT_VERSION:-latest}'
+    container_name: jackett
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - RUN_OPTS=<run options here>
+      - AUTO_UPDATE=true
+      - TZ=Europe/Berlin
+    volumes:
+      - ./configs/jackett:/config
+      - ./downloads:/downloads
+    ports:
+      - 9117:9117
+
+  sonarr:
+    image: 'lscr.io/linuxserver/sonarr:${SONARR_VERSION:-latest}'
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    volumes:
+      - ./configs/sonarr:/config
+      - ./eeries:/series
+      - ./downloads:/downloads
+    ports:
+      - 8989:8989
+
+  radarr:
+    image: 'lscr.io/linuxserver/radarr:${RADARR_VERSION:-latest}'
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    volumes:
+      - ./configs/radarr:/config
+      - ./movies:/movies
+      - ./downloads:/downloads
+    ports:
+      - 7878:7878
+
+  transmission:
+    restart: unless-stopped
+    image: lscr.io/linuxserver/transmission:${TRANSMISSION_VERSION:-latest}
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    volumes:
+      - ./configs/transmission:/config
+      - ./downloads:/downloads
+      - ./transmission/watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+
+  plex:
+    image: lscr.io/linuxserver/plex:${PLEX_VERSION:-latest}
+    container_name: plex
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PLEX_CLAIM=claim-HFuJnaEDspcyv5ZmiJxS
+    ports: 
+      - 32400:32400
+    volumes:
+      - ./configs/plex:/config
+      - ./series:/tv
+      - ./movies:/movies
