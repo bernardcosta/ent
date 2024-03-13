@@ -70,7 +70,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - PLEX_CLAIM=claim-HFuJnaEDspcyv5ZmiJxS
+      - PLEX_CLAIM=${PLEX_CLAIM}
     ports: 
       - 32400:32400
     volumes:
